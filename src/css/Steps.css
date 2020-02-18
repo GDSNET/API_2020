@@ -1,0 +1,117 @@
+
+ol.progtrckr {
+    
+    padding: 0;
+    z-index: 100;
+    right: 0;
+    bottom: 10px;
+    position: fixed;
+
+  }
+  
+  ol.progtrckr li {
+    display: inline-block;
+    text-align: center;
+    line-height: 6.5rem;
+    cursor: pointer;
+    z-index: 100;
+  }
+  
+  ol.progtrckr li span {
+    padding: 8px;
+    z-index: 100;
+    color: #fff;
+    font-size: 14px;
+  }
+  
+  @media (max-width: 650px) {
+    .progtrckr li span {
+      display: none;
+    }
+  }
+  .progtrckr em {
+    display: none;
+    font-weight: 700;
+    padding-left: 1rem;
+  }
+  
+  @media (max-width: 650px) {
+    .progtrckr em {
+      display: inline;
+    }
+  }
+  
+  ol.progtrckr li.progtrckr-todo {
+    color: #454545;
+    border-bottom: 4px solid #454545;
+  }
+  
+  ol.progtrckr li.progtrckr-doing {
+    color: black;
+    border-bottom: 4px solid #454545;
+  }
+  
+  ol.progtrckr li.progtrckr-done {
+    color: black;
+    border-bottom: 4px solid #45B39D;
+  }
+  
+  ol.progtrckr li:after {
+    content: "\00a0\00a0";
+  }
+  
+  ol.progtrckr li:before {
+    margin-top: 10px;
+    position: relative;
+    bottom: -3.7rem;
+    float: left;
+    left: 50%;
+  }
+  
+  ol.progtrckr li.progtrckr-todo:before {
+    content: "\272A";
+    color: #454545;
+    background-color: #454545;
+    width: 1.2em;
+    line-height: 1.2em;
+    font-size: 40px;
+    border-radius: 1.2em;
+    z-index: 100;
+  }
+  
+  ol.progtrckr li.progtrckr-todo:hover:before {
+    color: #45B39D;
+  }
+  
+  ol.progtrckr li.progtrckr-doing:before {
+    content: "\272A";
+    color: white;
+    background-color: #454545;
+    width: 1.2em;
+    line-height: 1.2em;
+    font-size: 40px;
+    border-radius: 1.2em;
+    z-index: 100;
+  }
+  
+  ol.progtrckr li.progtrckr-doing:hover:before {
+    color: #45B39D;
+  }
+  
+  ol.progtrckr li.progtrckr-done:before {
+    content: "\2714";
+    color:  white;
+    background-color: #45B39D;
+    width: 1.2em;
+    line-height: 1.2em;
+    font-size: 40px;
+    border-radius: 1.2em;
+    z-index: 100;
+    
+  }
+  
+  ol.progtrckr li.progtrckr-done:hover:before {
+    color: #333;
+  }
+
+  
