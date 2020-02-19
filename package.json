@@ -1,56 +1,17 @@
 {
-  "name": "gds_intranet",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@nivo/line": "^0.59.3",
-    "@opuscapita/filemanager-server": "^1.1.0-beta.6",
-    "@opuscapita/react-filemanager": "^1.1.0-beta.6",
-    "@opuscapita/react-filemanager-connector-node-v1": "^1.1.0-beta.6",
-    "d3-ease": "^1.0.5",
-    "js-file-download": "^0.4.9",
-    "lottie-react-web": "^2.1.4",
-    "pure-react-carousel": "^1.22.0",
-    "rc-progress": "^2.5.2",
-    "react": "^16.8.6",
-    "react-circular-progressbar": "^2.0.2",
-    "react-dom": "^16.8.6",
-    "react-donut-chart": "^1.1.8",
-    "react-event-timeline": "^1.6.3",
-    "react-flip-page": "^1.6.0",
-    "react-icons": "^3.7.0",
-    "react-keyed-file-browser": "^1.6.0",
-    "react-move": "^6.0.0",
-    "react-native-web": "^0.11.5",
-    "react-particle-animation": "^1.0.1",
-    "react-rating": "^1.7.2",
-    "react-redux": "^7.0.3",
-    "react-responsive-carousel": "^3.1.50",
-    "react-router-dom": "^5.0.0",
-    "react-scripts": "2.1.8",
-    "react-stepper-wizard": "^1.1.5",
-    "react-stepzilla": "^6.0.2",
-    "react-tabs": "^3.0.0",
-    "react-textfit": "^1.1.0",
-    "react-timespan": "^1.0.0",
-    "recharts": "^1.7.1",
-    "redux": "^4.0.1",
-    "styled-components": "^4.4.1",
-    "uninstall": "0.0.0"
-  },
+  "name": "filemanager-connector-node",
+  "version": "0.0.1",
+  "description": "",
+  "main": "app.js",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "eslintConfig": {
-    "extends": "react-app"
+  "author": "Jonas Sciagula Street",
+  "dependencies": {
+    "express": "~4.16.4",
+    "multer": "~1.4.1"
   },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ]
+  "devDependencies": {
+    "nodemon": "~1.18.9"
+  }
 }
