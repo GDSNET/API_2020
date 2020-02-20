@@ -382,5 +382,60 @@ app.post('/post_api_semana', function (req, res) {
             });
             })        
 
+            app.post('/post_api_update_log', function (req, res) {
+
+                console.log("SOY LA API post_api_update_log")
+                
+                   // console.log(cliente);
+                                    
+                var cliente = req.body.cliente;
+                var sala = req.body.sala;
+                var semana = req.body.semana;
+                var estado = req.body.estado;
+                
+                const pool = new sql.ConnectionPool({
+                user: 'sa',
+                password: 'sasa',
+                server: '192.168.0.16',
+                database: 'GDS_DW_PROD2'
+                })
+                   
+                var conn = pool;
+                
+                conn.connect().then(function () {
+                var req = new sql.Request(conn);
+                   // console.log("SOY LA CONEXION")
+                querys = "exec [dbo].[usp_CH_valida_salas_log] '"+cliente+"','"+sala+"','"+semana+"','"+estado+"'"  
+                console.log(querys)
+                conn.query(querys).then(function (recordset) {
+                
+                if (recordset.rowsAffected.length >0)
+                { console.log ("Update OK");
+                res.json({"data":"ok"});
+                res.end();
+                conn.close();
+                }
+                else
+                {
+                console.log ("0 filas afectadas");
+                res.json({"data":"error"});
+                res.end();
+                conn.close();
+                }
+                }) 
+                .catch(function (err) {
+                   // console.log(err)
+                    res.json({"usuario":"ERROR"}); 
+                    res.end();
+                    conn.close();
+                });
+                })
+                .catch(function (err) {
+                res.json({"usuario":"ERROR CONEXION"}); 
+                res.end();
+                conn.close();
+                });
+                })
+
 
     app.listen(3009);
