@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const fs = require('fs');
 var multer  = require('multer')
+var sql = require('mssql'); 
 
 app.use(express.json());
 
@@ -212,4 +213,109 @@ app.post('/filemanager/items/remove', (req, res) => {
     
 });
 
-app.listen(3009);
+
+app.post('/post_api_semana', function (req, res) {
+
+    console.log("SOY LA API post_api_semana")
+    
+    const pool = new sql.ConnectionPool({
+        user: 'sa',
+        password: 'sasa',
+        server: '192.168.0.16',
+        database: 'GDS_DW_PROD2'
+    })
+    
+    var conn = pool;
+    
+      
+    conn.connect().then(function () {
+        var req = new sql.Request(conn);
+        console.log("SOY LA CONEXION")
+    querys = "select * from v_api_tie_semana"
+    console.log(querys)
+    conn.query(querys).then(function (recordset) {
+    
+    
+        var semanas = {
+            semana:[]
+        };
+    
+        recordset.recordset.map( function (value, i)  {
+            semanas.semana.push({
+                "id" : value.id_tie_semana,
+                "desc" : value.desc_tie_dias_semana
+        });               
+        })
+    
+        res.json(semanas); 
+        res.end();
+        conn.close();
+    }) 
+        .catch(function (err) {
+            res.json({"usuario":"ERROR"}); 
+            res.end();
+            conn.close();
+        });
+    })
+    .catch(function (err) {
+    res.json({"usuario":"ERROR CONEXION"}); 
+    res.end();
+    conn.close();
+    });
+    })
+
+
+    app.post('/api_gds_select_cliente_intranet', function (req, res) {
+   
+        
+        const pool = new sql.ConnectionPool({
+            user: 'sa',
+            password: 'sasa',
+            server: '192.168.0.16',
+            database: 'GDS_DW_PROD2'
+        })
+       
+        var conn = pool;
+    
+    
+        conn.connect().then(function () {
+            var req = new sql.Request(conn);
+
+        querys = "SELECT * FROM  [dbo].[l_clientes_intranet]"  
+        //console.log(querys)
+        conn.query(querys).then(function (recordset) {
+        
+       // console.log('recordset.recordset: ' + recordset.recordset);
+        
+        //console.log('recordset:  ' + recordset);
+            var data = {
+                cliente_int:[]
+            };
+        
+            recordset.recordset.map( function (value, i)  {
+            data.cliente_int.push({
+                "id" : value.cliente_log,
+                "desc" : value.desc_cliente
+            });
+            })
+        //console.log(data);
+            res.json(data); 
+            res.end();
+            conn.close();
+        }) 
+            .catch(function (err) {
+                res.json({"usuario":"ERROR"}); 
+                res.end();
+                conn.close();
+            });
+        })
+        .catch(function (err) {
+        res.json({"usuario":"ERROR CONEXION"}); 
+        res.end();
+        conn.close();
+        });
+        })
+
+
+
+    app.listen(3009);
