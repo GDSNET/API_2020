@@ -316,6 +316,71 @@ app.post('/post_api_semana', function (req, res) {
         });
         })
 
+        app.post('/post_api_log', function (req, res) {
+
+            console.log("SOY LA API LOG")
+            
+            var cliente = req.body.cliente;
+            var semana = req.body.semana;
+            var estado = req.body.estado;    
+            
+           // console.log(cliente);
+        
+            const pool = new sql.ConnectionPool({
+                user: 'sa',
+                password: 'sasa',
+                server: '192.168.0.16',
+                database: 'GDS_DW_PROD2'
+            })
+           
+            var conn = pool;
+        
+
+            conn.connect().then(function () {
+                var req = new sql.Request(conn);
+               // console.log("SOY LA CONEXION")
+            querys = "select * from log_CH_clientes where cliente = '"+cliente+"'and id_cfg= "+semana+" and estado_ok = "+estado+""
+            console.log(querys)
+            conn.query(querys).then(function (recordset) {
+            
+           // console.log('recordset.recordset: ' + recordset.recordset);
+            
+            //console.log('recordset:  ' + recordset);
+                var data = {
+                    log:[]
+                }; 
+                recordset.recordset.map( function (value, i)  {
+                    data.log.push({
+                        "id_tie_dia" : value.id_tie_dia,
+                        "cliente" : value.cliente,
+                        "id_cfg" : value.id_cfg,
+                        "id_sala" : value.id_sala,
+                        "desc_sala" : value.desc_sala,
+                        "estado_pre_log" : value.estado_pre_log,
+                        "desc_pre_log" : value.desc_pre_log,
+                        "estado_log" : value.estado_log,
+                        "desc_log" : value.desc_log,
+                        "estado_valido" : value.estado_valido,
+                        "estado_ok" : value.estado_ok,
+                });
+                })
+            console.log(data);
+                res.json(data); 
+                res.end();
+                conn.close();
+            }) 
+                .catch(function (err) {
+                    res.json({"usuario":"ERROR"}); 
+                    res.end();
+                    conn.close();
+                });
+            })
+            .catch(function (err) {
+            res.json({"usuario":"ERROR CONEXION"}); 
+            res.end();
+            conn.close();
+            });
+            })        
 
 
     app.listen(3009);
