@@ -382,5 +382,114 @@ app.post('/post_api_semana', function (req, res) {
             });
             })        
 
+            app.post('/post_select_cliente_carga_p', function (req, res) {
+   
+        
+                const pool = new sql.ConnectionPool({
+                    user: 'sa',
+                    password: 'sasa',
+                    server: '192.168.0.16',
+                    database: 'GDS_DW_PROD2'
+                })
+               
+                var conn = pool;
+            
+            
+                conn.connect().then(function () {
+                    var req = new sql.Request(conn);
+        
+                querys = "SELECT * FROM  [dbo].[l_CH_clientes]"  
+                //console.log(querys)
+                conn.query(querys).then(function (recordset) {
+                
+               // console.log('recordset.recordset: ' + recordset.recordset);
+                
+                //console.log('recordset:  ' + recordset);
+                    var data = {
+                        cliente:[]
+                    };
+                
+                    recordset.recordset.map( function (value, i)  {
+                    data.cliente.push({
+                        "id_cliente":value.id_cliente,	
+                        "cliente":value.cliente,
+                        "esquema":value.esquema,
+                        "base_datos":value.base_datos,
+                        "server":value.server,
+
+                    });
+                    })
+                //console.log(data);
+                    res.json(data); 
+                    res.end();
+                    conn.close();
+                }) 
+                    .catch(function (err) {
+                        res.json({"usuario":"ERROR"}); 
+                        res.end();
+                        conn.close();
+                    });
+                })
+                .catch(function (err) {
+                res.json({"usuario":"ERROR CONEXION"}); 
+                res.end();
+                conn.close();
+                });
+                })
+
+                app.post('/post_select_indicador_carga_p', function (req, res) {
+   
+        
+                    const pool = new sql.ConnectionPool({
+                        user: 'sa',
+                        password: 'sasa',
+                        server: '192.168.0.16',
+                        database: 'GDS_DW_PROD2'
+                    })
+                   
+                    var conn = pool;
+                
+                
+                    conn.connect().then(function () {
+                        var req = new sql.Request(conn);
+            
+                    querys = "SELECT * FROM  [dbo].[l_CH_clientes_parametros]"  
+                    //console.log(querys)
+                    conn.query(querys).then(function (recordset) {
+                    
+                   // console.log('recordset.recordset: ' + recordset.recordset);
+                    
+                    //console.log('recordset:  ' + recordset);
+                        var data = {
+                            indicador:[]
+                        };
+                    
+                        recordset.recordset.map( function (value, i)  {
+                        data.indicador.push({	
+                            "cliente":value.cliente,
+                            "tabla_parametros":value.tabla_parametros,
+                            "aclaracion":value.aclaracion,
+                            
+    
+                        });
+                        })
+                    //console.log(data);
+                        res.json(data); 
+                        res.end();
+                        conn.close();
+                    }) 
+                        .catch(function (err) {
+                            res.json({"usuario":"ERROR"}); 
+                            res.end();
+                            conn.close();
+                        });
+                    })
+                    .catch(function (err) {
+                    res.json({"usuario":"ERROR CONEXION"}); 
+                    res.end();
+                    conn.close();
+                    });
+                    })
+            
 
     app.listen(3009);
