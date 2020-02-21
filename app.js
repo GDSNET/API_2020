@@ -3,6 +3,7 @@ const app = express();
 const fs = require('fs');
 var multer  = require('multer')
 var sql = require('mssql'); 
+const readXlsxFile = require('read-excel-file/node');
 
 app.use(express.json());
 
@@ -436,6 +437,23 @@ app.post('/post_api_semana', function (req, res) {
                 conn.close();
                 });
                 })
+
+
+              
+ 
+                // File path.
+                readXlsxFile('/path/to/file').then((rows) => {
+                  // `rows` is an array of rows
+                  // each row being an array of cells.
+                })
+                 
+                // Readable Stream.
+                readXlsxFile(fs.createReadStream('/path/to/file')).then((rows) => {
+                  ...
+                })
+
+
+
 
 
     app.listen(3009);
