@@ -3,7 +3,7 @@ const app = express();
 const fs = require('fs');
 var multer  = require('multer')
 var sql = require('mssql'); 
-const readXlsxFile = require('read-excel-file/node');
+
 
 app.use(express.json());
 
@@ -383,53 +383,53 @@ app.post('/post_api_semana', function (req, res) {
             });
             })        
 
-            app.post('/post_select_cliente_carga_p', function (req, res) {
-   
-        
+            app.post('/post_api_update_log', function (req, res) {
+
+                console.log("SOY LA API post_api_update_log")
+                
+                   // console.log(cliente);
+                                    
+                var cliente = req.body.cliente;
+                var sala = req.body.sala;
+                var semana = req.body.semana;
+                var estado = req.body.estado;
+                
                 const pool = new sql.ConnectionPool({
-                    user: 'sa',
-                    password: 'sasa',
-                    server: '192.168.0.16',
-                    database: 'GDS_DW_PROD2'
+                user: 'sa',
+                password: 'sasa',
+                server: '192.168.0.16',
+                database: 'GDS_DW_PROD2'
                 })
-               
+                   
                 var conn = pool;
-            
-            
+                
                 conn.connect().then(function () {
-                    var req = new sql.Request(conn);
-        
-                querys = "SELECT * FROM  [dbo].[l_CH_clientes]"  
-                //console.log(querys)
+                var req = new sql.Request(conn);
+                   // console.log("SOY LA CONEXION")
+                querys = "exec [dbo].[usp_CH_valida_salas_log] '"+cliente+"','"+sala+"','"+semana+"','"+estado+"'"  
+                console.log(querys)
                 conn.query(querys).then(function (recordset) {
                 
-               // console.log('recordset.recordset: ' + recordset.recordset);
-                
-                //console.log('recordset:  ' + recordset);
-                    var data = {
-                        cliente:[]
-                    };
-                
-                    recordset.recordset.map( function (value, i)  {
-                    data.cliente.push({
-                        "id_cliente":value.id_cliente,	
-                        "cliente":value.cliente,
-                        "esquema":value.esquema,
-                        "base_datos":value.base_datos,
-                        "server":value.server,
-
-                    });
-                    })
-                //console.log(data);
-                    res.json(data); 
+                if (recordset.rowsAffected.length >0)
+                { console.log ("Update OK");
+                res.json({"data":"ok"});
+                res.end();
+                conn.close();
+                }
+                else
+                {
+                console.log ("0 filas afectadas");
+                res.json({"data":"error"});
+                res.end();
+                conn.close();
+                }
+                }) 
+                .catch(function (err) {
+                   // console.log(err)
+                    res.json({"usuario":"ERROR"}); 
                     res.end();
                     conn.close();
-                }) 
-                    .catch(function (err) {
-                        res.json({"usuario":"ERROR"}); 
-                        res.end();
-                        conn.close();
-                    });
+                });
                 })
                 .catch(function (err) {
                 res.json({"usuario":"ERROR CONEXION"}); 
@@ -437,76 +437,6 @@ app.post('/post_api_semana', function (req, res) {
                 conn.close();
                 });
                 })
-
-                app.post('/post_select_indicador_carga_p', function (req, res) {
-   
-        
-                    const pool = new sql.ConnectionPool({
-                        user: 'sa',
-                        password: 'sasa',
-                        server: '192.168.0.16',
-                        database: 'GDS_DW_PROD2'
-                    })
-                   
-                    var conn = pool;
-                
-                
-                    conn.connect().then(function () {
-                        var req = new sql.Request(conn);
-            
-                    querys = "SELECT * FROM  [dbo].[l_CH_clientes_parametros]"  
-                    //console.log(querys)
-                    conn.query(querys).then(function (recordset) {
-                    
-                   // console.log('recordset.recordset: ' + recordset.recordset);
-                    
-                    //console.log('recordset:  ' + recordset);
-                        var data = {
-                            indicador:[]
-                        };
-                    
-                        recordset.recordset.map( function (value, i)  {
-                        data.indicador.push({	
-                            "cliente":value.cliente,
-                            "tabla_parametros":value.tabla_parametros,
-                            "aclaracion":value.aclaracion,
-                            
-    
-                        });
-                        })
-                    //console.log(data);
-                        res.json(data); 
-                        res.end();
-                        conn.close();
-                    }) 
-                        .catch(function (err) {
-                            res.json({"usuario":"ERROR"}); 
-                            res.end();
-                            conn.close();
-                        });
-                    })
-                    .catch(function (err) {
-                    res.json({"usuario":"ERROR CONEXION"}); 
-                    res.end();
-                    conn.close();
-                    });
-                    })
-            
-
-              
- 
-                // File path.
-                readXlsxFile('/path/to/file').then((rows) => {
-                  // `rows` is an array of rows
-                  // each row being an array of cells.
-                })
-                 
-                // Readable Stream.
-                readXlsxFile(fs.createReadStream('/path/to/file')).then((rows) => {
-                  ...
-                })
-
-
 
 
 
