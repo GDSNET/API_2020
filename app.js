@@ -452,6 +452,8 @@ app.post('/post_api_semana', function (req, res) {
  let arraydatos = req.body[0].data;
  let servicio = req.body[0].servicio;
  let tabla = req.body[0].tabla;
+ let bd = req.body[0].bd;
+ let sv = "["+req.body[0].sv+"]";
 // console.log(arraydatos.length)
 // console.log(arraydatos[0].length)
 // console.log(arraydatos[0][2])
@@ -479,7 +481,7 @@ app.post('/post_api_semana', function (req, res) {
      }
  }
 
-     queryarraydatos = "insert into "+servicio+"."+tabla+" values" + query_valores
+     queryarraydatos = "insert into "+sv+"."+bd+"."+servicio+"."+tabla+" values" + query_valores
 
      console.log(queryarraydatos);
          request.query(queryarraydatos, function(err, recordset) {
