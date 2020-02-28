@@ -96,11 +96,11 @@ app.post('/filemanager/items/copy', (req, res) => {
             const newPath = __dirname + '/Documentos' + '/' + f;
             fs.copyFile(oldPath, newPath, err => {
                 const response = {
-                    success: !err,
-                    error: err,
-                    oldPath,
-                    newPath,
-                    filename: f
+ success: !err,
+ error: err,
+ oldPath,
+ newPath,
+ filename: f
                 };
                 return err ? reject(response) : resolve(response);
             });        
@@ -123,11 +123,11 @@ app.post('/filemanager/items/move', (req, res) => {
             const newPath = __dirname + '/Documentos' + destination + '/' + f;
             fs.rename(oldPath, newPath, err => {
                 const response = {
-                    success: !err,
-                    error: err,
-                    oldPath,
-                    newPath,
-                    filename: f
+ success: !err,
+ error: err,
+ oldPath,
+ newPath,
+ filename: f
                 };
                 return err ? reject(response) : resolve(response);
             });        
@@ -195,11 +195,11 @@ app.post('/filemanager/items/remove', (req, res) => {
         return new Promise((resolve, reject) => {
             fs.unlink(fullPath, err => {
                 const response = {
-                    success: !err,
-                    error: err,
-                    path,
-                    filename: f,
-                    fullPath
+ success: !err,
+ error: err,
+ path,
+ filename: f,
+ fullPath
                 };
                 return err ? reject(response) : resolve(response);
             });
@@ -348,21 +348,21 @@ app.post('/post_api_semana', function (req, res) {
             
             //console.log('recordset:  ' + recordset);
                 var data = {
-                    log:[]
+ log:[]
                 }; 
                 recordset.recordset.map( function (value, i)  {
-                    data.log.push({
-                        "id_tie_dia" : value.id_tie_dia,
-                        "cliente" : value.cliente,
-                        "id_cfg" : value.id_cfg,
-                        "id_sala" : value.id_sala,
-                        "desc_sala" : value.desc_sala,
-                        "estado_pre_log" : value.estado_pre_log,
-                        "desc_pre_log" : value.desc_pre_log,
-                        "estado_log" : value.estado_log,
-                        "desc_log" : value.desc_log,
-                        "estado_valido" : value.estado_valido,
-                        "estado_ok" : value.estado_ok,
+ data.log.push({
+     "id_tie_dia" : value.id_tie_dia,
+     "cliente" : value.cliente,
+     "id_cfg" : value.id_cfg,
+     "id_sala" : value.id_sala,
+     "desc_sala" : value.desc_sala,
+     "estado_pre_log" : value.estado_pre_log,
+     "desc_pre_log" : value.desc_pre_log,
+     "estado_log" : value.estado_log,
+     "desc_log" : value.desc_log,
+     "estado_valido" : value.estado_valido,
+     "estado_ok" : value.estado_ok,
                 });
                 })
             console.log(data);
@@ -371,9 +371,9 @@ app.post('/post_api_semana', function (req, res) {
                 conn.close();
             }) 
                 .catch(function (err) {
-                    res.json({"usuario":"ERROR"}); 
-                    res.end();
-                    conn.close();
+ res.json({"usuario":"ERROR"}); 
+ res.end();
+ conn.close();
                 });
             })
             .catch(function (err) {
@@ -387,8 +387,8 @@ app.post('/post_api_semana', function (req, res) {
 
                 console.log("SOY LA API post_api_update_log")
                 
-                   // console.log(cliente);
-                                    
+// console.log(cliente);
+                 
                 var cliente = req.body.cliente;
                 var sala = req.body.sala;
                 var semana = req.body.semana;
@@ -400,12 +400,12 @@ app.post('/post_api_semana', function (req, res) {
                 server: '192.168.0.16',
                 database: 'GDS_DW_PROD2'
                 })
-                   
+
                 var conn = pool;
                 
                 conn.connect().then(function () {
                 var req = new sql.Request(conn);
-                   // console.log("SOY LA CONEXION")
+// console.log("SOY LA CONEXION")
                 querys = "exec [dbo].[usp_CH_valida_salas_log] '"+cliente+"','"+sala+"','"+semana+"','"+estado+"'"  
                 console.log(querys)
                 conn.query(querys).then(function (recordset) {
@@ -425,10 +425,10 @@ app.post('/post_api_semana', function (req, res) {
                 }
                 }) 
                 .catch(function (err) {
-                   // console.log(err)
-                    res.json({"usuario":"ERROR"}); 
-                    res.end();
-                    conn.close();
+// console.log(err)
+ res.json({"usuario":"ERROR"}); 
+ res.end();
+ conn.close();
                 });
                 })
                 .catch(function (err) {
@@ -438,6 +438,71 @@ app.post('/post_api_semana', function (req, res) {
                 });
                 })
 
+                app.post('/insert_parametros', function (req, res, next) {
 
+ var sqlConfig = {
+     user: 'sa',
+     password: 'sasa',
+     server: '192.168.0.16',
+     database: 'GDS_DW_PROD2'
+     }
+     
+ sql.close();
+ 
+ let arraydatos = req.body[0].data;
+ let servicio = req.body[0].servicio;
+ let tabla = req.body[0].tabla;
+// console.log(arraydatos.length)
+// console.log(arraydatos[0].length)
+// console.log(arraydatos[0][2])
+
+                sql.connect(sqlConfig, function() {
+ var request = new sql.Request();
+                 
+ var query_valores = "('";
+                
+ for(var i = 0 ; i < arraydatos.length ; i++){
+     if(i > 0){
+         query_valores = query_valores +"('"
+     }
+     for(var j = 0 ; j < arraydatos[0].length ; j++){
+        if(j + 1 == arraydatos[0].length){
+            query_valores= query_valores + arraydatos[i][j] +"',"
+        }else{
+            query_valores= query_valores + arraydatos[i][j] +"','"
+        }
+     }
+     if(i + 1 == arraydatos.length){
+         query_valores= query_valores + "GETDATE())"
+     }else{
+         query_valores= query_valores + "GETDATE()),"
+     }
+ }
+
+     queryarraydatos = "insert into "+servicio+"."+tabla+" values" + query_valores
+
+     console.log(queryarraydatos);
+         request.query(queryarraydatos, function(err, recordset) {
+
+            try {
+                if (recordset.rowsAffected.length >0)
+                {
+                res.json({"data":"ok"});
+                res.end();
+                }
+                else
+                {
+                console.log ("0 filas afectadas");
+                res.json({"data":"error"});
+                res.end();
+                }
+            } catch (error) {
+                res.json({"data":err});
+                res.end();
+            }
+          
+         })
+ })
+                })
 
     app.listen(3009);
