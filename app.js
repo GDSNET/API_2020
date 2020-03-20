@@ -3,9 +3,11 @@ const app = express();
 const fs = require('fs');
 var multer  = require('multer')
 var sql = require('mssql'); 
-
+var bodyParser = require("body-parser");
 
 app.use(express.json());
+app.use (bodyParser.json ({limit: '10mb', extended: true})) 
+app.use (bodyParser.urlencoded ({limit: '10mb', extended: true}))
 
 const apiResponse = (res, status = 200) => (data, success = true, errorMsg = null, error = null) => {
     return res.status(status).json({
@@ -438,73 +440,244 @@ app.post('/post_api_semana', function (req, res) {
                 });
                 })
 
+
+
                 app.post('/insert_parametros', function (req, res, next) {
 
- var sqlConfig = {
-     user: 'sa',
-     password: 'sasa',
-     server: '192.168.0.16',
-     database: 'GDS_DW_PROD2'
-     }
-     
- sql.close();
- 
- let arraydatos = req.body[0].data;
- let servicio = req.body[0].servicio;
- let tabla = req.body[0].tabla;
- let bd = req.body[0].bd;
- let sv = "["+req.body[0].sv+"]";
-// console.log(arraydatos.length)
-// console.log(arraydatos[0].length)
-// console.log(arraydatos[0][2])
+                    var sqlConfig = {
+                        user: 'sa',
+                        password: 'sasa',
+                        server: '192.168.0.16',
+                        database: 'GDS_DW_PROD2'
+                        }
+                        
+                    sql.close();
+                    
+                    let arraydatos = req.body[0].data;
+                    let servicio = req.body[0].servicio;
+                    let tabla = req.body[0].tabla;
+                    let bd = req.body[0].bd;
+                    let sv = "["+req.body[0].sv+"]";
+                    let date = new Date();
+                    let dia = date.getDate() 
+                    let mes = parseInt(date.getMonth()) + 1 
+                    let ano = date.getFullYear()
+                    let hora = date.getHours();
+                    let minuto = date.getMinutes();  
+                    let segundos = date.getSeconds();              
 
-                sql.connect(sqlConfig, function() {
- var request = new sql.Request();
-                 
- var query_valores = "('";
-                
- for(var i = 0 ; i < arraydatos.length ; i++){
-     if(i > 0){
-         query_valores = query_valores +"('"
-     }
-     for(var j = 0 ; j < arraydatos[0].length ; j++){
-        if(j + 1 == arraydatos[0].length){
-            query_valores= query_valores + arraydatos[i][j] +"',"
-        }else{
-            query_valores= query_valores + arraydatos[i][j] +"','"
-        }
-     }
-     if(i + 1 == arraydatos.length){
-         query_valores= query_valores + "GETDATE())"
-     }else{
-         query_valores= query_valores + "GETDATE()),"
-     }
- }
+                    let fecha = ano+"/"+mes+"/"+dia+" "+hora+":"+minuto+":"+segundos
 
-     queryarraydatos = "insert into "+sv+"."+bd+"."+servicio+"."+tabla+" values" + query_valores
+                    
+                    console.log(fecha)
+                   
+                                   sql.connect(sqlConfig, function() {
+                    var request = new sql.Request();
+                                    
+                    var query_valores = " SELECT '";
+                                   
+                    for(var i = 0 ; i < arraydatos.length ; i++){
+                        if(i > 0){
+                            query_valores = query_valores +" SELECT '"
+                        }
+                        for(var j = 0 ; j < arraydatos[0].length ; j++){
+                           if(j + 1 == arraydatos[0].length){
+                               query_valores= query_valores + arraydatos[i][j] +"',"
+                           }else{
+                               query_valores= query_valores + arraydatos[i][j] +"','"
+                           }
+                        }
+                        if(i + 1 == arraydatos.length){
+                            query_valores= query_valores + "'"+fecha+"'" 
+                        }else{
+                            query_valores= query_valores + "'"+fecha+"' UNION ALL"
+                        }
+                    }
+                   
+                        queryarraydatos = "insert into "+sv+"."+bd+"."+servicio+"."+tabla+" " + query_valores
+                   
+                        console.log(queryarraydatos);
+                            request.query(queryarraydatos, function(err, recordset) {
+                   
+                               try {
+                                   if (recordset.rowsAffected.length >0)
+                                   {
+                                   res.json({"data":"ok"});
+                                   res.end();
+                                   }
+                                   else
+                                   {
+                                   console.log ("0 filas afectadas");
+                                   res.json({"data":"error"});
+                                   res.end();
+                                   }
+                               } catch (error) {
+                                   res.json({"data":err});
+                                   res.end();
+                               }
+                             
+                            })
+                    })
+                                   })
+                   
 
-     console.log(queryarraydatos);
-         request.query(queryarraydatos, function(err, recordset) {
 
-            try {
-                if (recordset.rowsAffected.length >0)
-                {
-                res.json({"data":"ok"});
-                res.end();
-                }
-                else
-                {
-                console.log ("0 filas afectadas");
-                res.json({"data":"error"});
-                res.end();
-                }
-            } catch (error) {
-                res.json({"data":err});
-                res.end();
-            }
-          
-         })
- })
-                })
+
+
+
+
+
+
+
+                app.post('/post_app_sala',function (req, res) {
+
+                    var token = req.body.token;
+                    
+                    const pool = new sql.ConnectionPool({
+                        user: 'sa',
+                        password: 'sasa',
+                        server: '192.168.0.22',
+                        database: 'GDS_APP_CL'
+                    })
+                    
+                    var conn = pool;
+                    
+                    queryspdv = "select * from [v_app_salas] where token= '" + token + "'"
+                    console.log(queryspdv);
+                    
+                    try{
+                        conn.connect().then(function () {
+                    console.log("dentro de la funcion connpdv la query es: " +queryspdv)
+                    conn.query(queryspdv).then(function (recordset) {
+
+                        console.log("dentro de la funcion conn")
+                    
+                    var Salas = {
+                        sala:[]
+                    };
+                    
+                     recordset.recordset.map(async function (value, i)  {
+                        Salas.sala.push({
+                            "id_sala" : value.id_sala,
+                            "desc_sala" : value.desc_sala,
+                            "fecha_visita" : value.fecha_visita,
+                            "vista" : value.vista
+                    });       
+                    
+                    })
+                    
+                    querysindicadores = "select * from v_app_salas_indicadores WHERE token = '" + token + "'"
+                     conn.query(querysindicadores).then(function (recordset) {
+                    
+                    var Indicadores = {
+                        indicador:[]
+                    };
+                    
+                     recordset.recordset.map(async function (value, i)  {
+                        Indicadores.indicador.push({
+                            "id_sala" : value.id_sala,
+                            "display_name" : value.display_name,
+                            "valor" : value.valor,
+                            "diferencia" : value.diferencia
+                    });       
+                    
+                    })
+
+                    
+                    querysDetalle = "select * from v_app_salas_indicadores_detalle WHERE token = '" + token + "'"
+                    conn.query(querysDetalle).then(function (recordset) {
+                   
+                   var Detalles = {
+                       detalle:[]
+                   };
+                   
+                    recordset.recordset.map(async function (value, i)  {
+                        Detalles.detalle.push({
+                           "token" : value.token,
+                           "id_sala" : value.id_sala,
+                           "id_indicador" : value.id_indicador,
+                           "desc_indicador" : value.desc_indicador,
+                           "desc_var1" : value.desc_var1,
+                           "desc_var2" : value.desc_var2,
+                           "desc_var3" : value.desc_var3,
+                           "presencia" : value.valor_presencia,
+                           "precio" : value.valor_precio,
+                           "promocion" : value.valor_promocion,
+                           "exhibicion" : value.valor_exhibicion,
+                           "porcentaje" : value.valor_porcentaje,
+                   });       
+                   })
+                    
+                    var resA={}, fin = [], resC= {},  resD=[], resB={}
+                    
+                    Salas.sala.map(function(value, i){
+                    
+                    resA=  {"id_sala" : value.id_sala,
+                    "desc_sala" : value.desc_sala,
+                    "fecha_visita" : value.fecha_visita,
+                    "vista" : value.vista}
+                    
+                    Indicadores.indicador.map(function(values, i){
+                    if(value.id_sala == values.id_sala){
+
+                    let union = []
+                    union =  [{"display_name" : values.display_name,
+                    "valor" : values.valor,
+                    "diferencia" : values.diferencia}]
+
+                    var todo = Object.assign(union);
+                    
+                     resB = todo
+
+                     Detalles.detalle.map(function(valor, i){
+                        
+                        if(valor.id_sala == values.id_sala){
+                         
+                        let union_det =  {"presencia" : valor.presencia,
+                        "precio" : valor.precio,
+                        "promocion" : valor.promocion,
+                        "exhibicion" : valor.exhibicion,
+                        "porcentaje" : valor.porcentaje}
+
+                        var todo_det = Object.assign(union_det);
+
+                        //resB = Object.assign(todo + todo_det)
+                        //resB = (todo_det)
+
+                        //resB = Object.assign(union ,union_det)
+                        resD.push(todo_det)
+                        }//CIERRE IF Detalles
+                        })//CIERRE MAP Detalles
+
+                    }//CIERRE IF SALAS
+                    resB["detalle"] = resD
+                    })//CIERRE MAP Indicadores
+                    
+                   
+                     resC["sala" + resA.id_sala] = resA
+                  
+                     resA["indicadores"]= resB
+                    
+                     console.log(resD)
+                    
+                    })//CIERRE MAP SALA
+                    fin.push(resC);
+                    res.json(fin)
+                    
+                    })//CIERRE CONN
+                    })
+                    })
+                    .catch(function (err) {
+                        console.log("ERROR 2" +err);
+                        res.json({"id_usuario":"ERROR"}); 
+                        conn.close();
+                    });
+                });
+                    }catch(err) {
+                        console.log("ERROR: " +err);
+                        res.json({"id_usuario":"ERROR"}); 
+                        conn.close();
+                    };                    
+                    })
 
     app.listen(3009);
