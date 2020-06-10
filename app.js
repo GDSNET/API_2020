@@ -537,7 +537,7 @@ app.post('/post_api_semana', function (req, res) {
                         user: 'sa',
                         password: 'sasa',
                         server: '192.168.0.22',
-                        database: 'GDS_APP_CL'
+                        database: 'GDS_APP'
                     })
                     
                     var conn = pool;
