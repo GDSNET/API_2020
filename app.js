@@ -537,7 +537,7 @@ app.post('/post_api_semana', function (req, res) {
                         user: 'sa',
                         password: 'sasa',
                         server: '192.168.0.22',
-                        database: 'GDS_APP_CL'
+                        database: 'GDS_APP'
                     })
                     
                     var conn = pool;
@@ -553,14 +553,16 @@ app.post('/post_api_semana', function (req, res) {
                         console.log("dentro de la funcion conn")
                     
                     var Salas = {
-                        sala:[]
+                        salas:[]
                     };
                     
                      recordset.recordset.map(async function (value, i)  {
-                        Salas.sala.push({
+                        Salas.salas.push({
                             "id_sala" : value.id_sala,
-                            "desc_sala" : value.desc_sala,
                             "fecha_visita" : value.fecha_visita,
+                            "cadena" : value.desc_cadena,
+                            "desc_sala" : value.desc_sala,
+                            "direccion" : value.desc_direccion,
                             "vista" : value.vista
                     });       
                     
@@ -610,7 +612,7 @@ app.post('/post_api_semana', function (req, res) {
                     
                     var resA={}, fin = [], resC= {},  resD=[], resB={}
                     
-                    Salas.sala.map(function(value, i){
+                    Salas.salas.map(function(value, i){
                     
                     resA=  {"id_sala" : value.id_sala,
                     "desc_sala" : value.desc_sala,
@@ -641,10 +643,6 @@ app.post('/post_api_semana', function (req, res) {
 
                         var todo_det = Object.assign(union_det);
 
-                        //resB = Object.assign(todo + todo_det)
-                        //resB = (todo_det)
-
-                        //resB = Object.assign(union ,union_det)
                         resD.push(todo_det)
                         }//CIERRE IF Detalles
                         })//CIERRE MAP Detalles
@@ -658,9 +656,10 @@ app.post('/post_api_semana', function (req, res) {
                   
                      resA["indicadores"]= resB
                     
-                     console.log(resD)
+                     //console.log(resD)
                     
                     })//CIERRE MAP SALA
+                    fin.push(Salas);
                     fin.push(resC);
                     res.json(fin)
                     
