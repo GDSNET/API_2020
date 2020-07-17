@@ -5,7 +5,6 @@ var sql = require('mssql');
 const salas = (req, res) => {
         console.info('invocando post_pruebas new')
         var token = req.body.token;
-        var arbol = req.body.arbol;
 
         console.log("clase de arbol:", arbol)
         
