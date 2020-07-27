@@ -50,8 +50,9 @@ exports.funSalas = function (req, res)  {
       .catch(respuesta=>{
        console.log('respuesta error', respuesta)
       })
-  })
+})
 
+   
   }
   
 
