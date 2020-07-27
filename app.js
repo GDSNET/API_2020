@@ -35,7 +35,7 @@ app.use(function(req, res, next) {
 
 app.post('/post_pre_salas',function (req, res) {
 
-    var returno =   salas.salas(req, res)
+    var returno =   salas.funSalas(req, res)
 
    
 })
