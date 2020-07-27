@@ -15,10 +15,11 @@ exports.funSalas = function (req, res)  {
         var conn = pool;
     try{
         conn.connect().then(function () {
-        queryspdv = "select * from [v_app_salas] where token= '" + token + "'"
-
+        queryspdv = "select * from [v_app_salas] where token= '" + token + "';"
+        queryspdv2 = "select * from [v_app_salas_indicadores] where token= '" + token + "';"
+        queryAll = queryspdv + queryspdv2
        new Promise((resolve, reject) => {
-            resolve(funcionQuery(queryspdv, conn ))
+            resolve(funcionQuery(queryAll, conn ))
         }).then(respuesta=>{
             res.json(respuesta)
           })
@@ -40,8 +41,9 @@ exports.funSalas = function (req, res)  {
   async function funcionQuery  (queryspdv, conn) {
 
     return await conn.query(queryspdv).then( (res_sql) => {
+      console.info("va con todo: ", JSON.stringify(res_sql.recordsets[1]))
+    return new Promise((resolve) => {
       
-    return new Promise((resolve, reject) => {
         resolve(funAgruparData(res_sql.recordset))
     }).then(respuesta=>{
         console.log('respuesta OK', respuesta)
@@ -64,16 +66,17 @@ exports.funSalas = function (req, res)  {
         const key = val.fecha_visita
         if(obj[key]) {
           obj[key].data.push({
-            desc_cadena: val.desc_cadena,
-            desc_sala:val.desc_sala,
+            desc_indicador: val.desc_indicador,
+            valor:val.valor,
           }) 
         } else {
           obj[key] = {}
           obj[key].fecha_visita = val.fecha_visita;
+          obj[key].desc_cadena = val.desc_cadena;
           obj[key].data = [
             {
-                desc_cadena: val.desc_cadena,
-                desc_sala:val.desc_sala,
+              desc_indicador: val.desc_indicador,
+              valor:val.valor
             }
           ]
         }
