@@ -1,6 +1,5 @@
 
 var sql = require('mssql'); 
-
 exports.funSalas = function (req, res)  {
         console.info('invocando post_pruebas new')
         var token = req.body.token;
@@ -37,7 +36,7 @@ exports.funSalas = function (req, res)  {
 
   async function funcionQuery  (queryspdv, conn) {
     return await conn.query(queryspdv).then( (res_sql) => {
-    //console.info("va con todo: ", JSON.stringify(res_sql.recordsets[2]))
+    console.info("va con todo: ", JSON.stringify(res_sql.recordsets[2]))
     return new Promise((resolve) => {
         resolve(funAgruparData(res_sql.recordsets))
     }).then(respuesta=>{
@@ -53,44 +52,41 @@ exports.funSalas = function (req, res)  {
 
 
   function funAgruparData (data) {
+    console.log("recibiendo todo el choclo :  : ", data)
+    
    
-    salas = data[0]
-    indicadores = data[1]
-    detalles = data[2]
-    // console.log("recibiendo todo el salas :  : ", salas)
-    // console.log("recibiendo todo el indicadores :  : ", indicadores)
-    // console.log("recibiendo todo el detalles :  : ", detalles)
-    return funAgrupando(salas, indicadores, detalles)
   }
     
 
-
-   function  funAgrupando (salas, indicadores, detalles) {
-    const   dataReduced =   salas
-    .reduce( (obj,val) => {
-     const  dataIndicador  =  indicadores
-     .filter(indicadores => {
-       if(indicadores.id_sala===val.id_sala){
-
-       dataDetalle = detalles.filter(det => {
-          if(indicadores.id_sala===det.id_sala && indicadores.id_indicador===det.id_indicador ){
-          return det
-          }
-        })
-      
-        return indicadores["detalles"] = dataDetalle
-       }
-     })
-     const key = "sala" + val.id_sala
-     obj[key] = {}
-     obj[key].id_sala = val.id_sala;
-     obj[key].desc_sala = val.desc_sala;
-     obj[key].desc_cadena = val.desc_cadena;
-     obj[key].indicadores = dataIndicador
-     return obj;
-  }, {})
-  
-  return  dataReduced
-}
+   function funAgruparDataNivel1 (data) {
+    //console.log("inicio : funAgruparData : ", data)
     
+     const  dataReduced =  data
+      .reduce( (obj,val) => {
+        
+        const key = val.fecha_visita
+        if(obj[key]) {
+          obj[key].data.push({
+            desc_indicador: val.desc_indicador,
+            valor:val.valor,
+          }) 
+        } else {
+          obj[key] = {}
+          obj[key].fecha_visita = val.fecha_visita;
+          obj[key].desc_cadena = val.desc_cadena;
+          obj[key].data = [
+            {
+              desc_indicador: val.desc_indicador,
+              valor:val.valor
+            }
+          ]
+        }
+        
+        return obj;
+        
+      },{})
 
+    return Object.keys(dataReduced)
+      .map(v => dataReduced[v])
+  }
+    

@@ -1,7 +1,7 @@
 
 var sql = require('mssql'); 
 
-exports.funSalas = function (req, res)  {
+exports.funPruebas = function (req, res)  {
         console.info('invocando post_pruebas new')
         var token = req.body.token;
         const pool = new sql.ConnectionPool({

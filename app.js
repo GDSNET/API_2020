@@ -1,5 +1,6 @@
 //import {fun_post_prueba} from './apis_app/post_prueba'
 const apiSalas = require('./apis_app/post_salas');
+const apiPruebas = require('./apis_pruebas/post_prueba');
 const express = require('express');
 const app = express();
 const fs = require('fs');
@@ -34,11 +35,13 @@ app.use(function(req, res, next) {
 
 
 app.post('/post_pre_salas',function (req, res) {
+apiSalas.funSalas(req, res)
 
-    var returno =   apiSalas.funSalas(req, res)
-
-   
 })
+app.post('/post_pre_pruebas',function (req, res) {
+    apiPruebas.funPruebas(req, res)
+})
+    
 
 
 
