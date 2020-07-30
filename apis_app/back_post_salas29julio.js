@@ -1,7 +1,5 @@
 
 var sql = require('mssql'); 
-
-
 exports.funSalas = function (req, res)  {
         console.info('invocando post_pruebas new')
         var token = req.body.token;
@@ -11,14 +9,15 @@ exports.funSalas = function (req, res)  {
             server: '192.168.0.22',
             database: 'GDS_APP'
         })
-        
         var conn = pool;
     try{
         conn.connect().then(function () {
-        queryspdv = "select * from [v_app_salas] where token= '" + token + "'"
-
-       new Promise((resolve, reject) => {
-            resolve(funcionQuery(queryspdv, conn ))
+        queryspdv = "select * from [v_app_salas] where token = '" + token + "';"
+        queryspdv2 = "select * from [v_app_salas_indicadores] where token= '" + token + "';"
+        queryspdv3 = "select * from [v_app_salas_indicadores_detalle] where token= '" + token + "';"
+        queryAll = queryspdv + queryspdv2 + queryspdv3
+       new Promise((resolve) => {
+            resolve(funcionQuery(queryAll, conn ))
         }).then(respuesta=>{
             res.json(respuesta)
           })
@@ -35,29 +34,32 @@ exports.funSalas = function (req, res)  {
 
     }
 
-
-
   async function funcionQuery  (queryspdv, conn) {
-
     return await conn.query(queryspdv).then( (res_sql) => {
-      
-    return new Promise((resolve, reject) => {
-        resolve(funAgruparData(res_sql.recordset))
+    console.info("va con todo: ", JSON.stringify(res_sql.recordsets[2]))
+    return new Promise((resolve) => {
+        resolve(funAgruparData(res_sql.recordsets))
     }).then(respuesta=>{
-        console.log('respuesta OK', respuesta)
+        //console.log('respuesta OK', respuesta)
         return respuesta
       })
       .catch(respuesta=>{
        console.log('respuesta error', respuesta)
       })
-})
-
-   
+  })
   }
   
 
-   function funAgruparData (data) {
-    console.log("inicio : funAgruparData : ", data)
+
+  function funAgruparData (data) {
+    console.log("recibiendo todo el choclo :  : ", data)
+    
+   
+  }
+    
+
+   function funAgruparDataNivel1 (data) {
+    //console.log("inicio : funAgruparData : ", data)
     
      const  dataReduced =  data
       .reduce( (obj,val) => {
@@ -65,16 +67,17 @@ exports.funSalas = function (req, res)  {
         const key = val.fecha_visita
         if(obj[key]) {
           obj[key].data.push({
-            desc_cadena: val.desc_cadena,
-            desc_sala:val.desc_sala,
+            desc_indicador: val.desc_indicador,
+            valor:val.valor,
           }) 
         } else {
           obj[key] = {}
           obj[key].fecha_visita = val.fecha_visita;
+          obj[key].desc_cadena = val.desc_cadena;
           obj[key].data = [
             {
-                desc_cadena: val.desc_cadena,
-                desc_sala:val.desc_sala,
+              desc_indicador: val.desc_indicador,
+              valor:val.valor
             }
           ]
         }

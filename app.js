@@ -1,5 +1,5 @@
 //import {fun_post_prueba} from './apis_app/post_prueba'
-const salas = require('./apis_app/post_salas');
+const apiSalas = require('./apis_app/post_salas');
 const express = require('express');
 const app = express();
 const fs = require('fs');
@@ -35,10 +35,12 @@ app.use(function(req, res, next) {
 
 app.post('/post_pre_salas',function (req, res) {
 
-    var returno =   salas.funSalas(req, res)
+    var returno =   apiSalas.funSalas(req, res)
 
    
 })
+
+
 
 
 app.get('/filemanager/list', (req, res) => {
