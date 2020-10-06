@@ -1,11 +1,9 @@
-const apiSalas = require('./apis_app/post_salas');
-const apiPruebas = require('./apis_pruebas/post_prueba');
 const express = require('express');
 const app = express();
 const fs = require('fs');
 var multer  = require('multer')
 var sql = require('mssql'); 
-var bodyParser = require("body-parser");
+var bodyParser = require('body-parser');
 
 
 app.use(express.json());
@@ -36,16 +34,6 @@ app.use(function(req, res, next) {
 //app.use (bodyParser.json ({limit: '500mb', extended: true}))
 //app.use (bodyParser.urlencoded ({limit: '500mb', extended: true}))
 
-
-
-app.post('/post_pre_salas',function (req, res) {
-    apiSalas.funSalas(req, res)
-
-})
-app.post('/post_pre_pruebas',function (req, res) {
-    apiPruebas.funPruebas(req, res)
-})
-    
 
 app.get('/filemanager/list', (req, res) => {
     const path = __dirname + '/Documentos' + req.query.path || '/';
