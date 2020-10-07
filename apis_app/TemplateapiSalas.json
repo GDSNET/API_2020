@@ -42,9 +42,6 @@
         "numero": 99,
         "estado": "premier"}
     ],
-  "objeciones": [
-      {"id_sala": "11", "indicador": "osa", "id_sku": 98765, "objecion": "sin stock"}
-      ],
   "sala10" : 
       {
         "id_sala": 10,
