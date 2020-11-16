@@ -51,13 +51,13 @@ exports.funSalas = function (req, res)  {
         
         function funAgruparData (data) {
    
-          arraySalas = data[0]
-          arrayIndicadores = data[1]
-          arrayVariables = data[2]
-          // console.log("recibiendo todo el arraySalas :  : ", arraySalas)
-          // console.log("recibiendo todo el arrayIndicadores :  : ", arrayIndicadores)
-          // console.log("recibiendo todo el arrayVariables :  : ", arrayVariables)
-          return funAgrupadoSala(arraySalas, arrayIndicadores, arrayVariables)
+          salas = data[0]
+          indicadores = data[1]
+          detalles = data[2]
+          // console.log("recibiendo todo el salas :  : ", salas)
+          // console.log("recibiendo todo el indicadores :  : ", indicadores)
+           console.log("recibiendo todo el detalles :  : ", detalles)
+          return funAgrupando(salas, indicadores, detalles)
         }
           
         
@@ -65,65 +65,36 @@ exports.funSalas = function (req, res)  {
     }
 
 
-   function  funAgrupadoSala (arraySalas, arrayIndicadores, arrayVariables) {
-    const   dataReduced =   arraySalas
+
+
+
+
+
+   function  funAgrupando (salas, indicadores, detalles) {
+    const   dataReduced =   salas
     .reduce( (obj,val) => {
+     const  dataIndicador  =  indicadores
+     .filter(indicadores => {
+       if(indicadores.id_sala===val.id_sala){
+
+       dataDetalle = detalles.filter(det => {
+          if(indicadores.id_sala===det.id_sala && indicadores.id_indicador===det.id_indicador ){
+          return det
+          }
+        })
+        return indicadores["detalles"] = dataDetalle
+       }
+     })
      const key = "sala" + val.id_sala
      obj[key] = {}
      obj[key].id_sala = val.id_sala;
      obj[key].desc_sala = val.desc_sala;
      obj[key].desc_cadena = val.desc_cadena;
-     obj[key].indicadores = funAgrupadoIndicador(arrayIndicadores, val.id_sala, arrayVariables)
+     obj[key].indicadores = dataIndicador
      return obj;
   }, {})
-
+  
   return  dataReduced
 }
     
-
-
-function  funAgrupadoIndicador (arrayIndicadores, id_sala, arrayVariables) {
-  const  dataIndicador  =  arrayIndicadores
-  .filter(indicadores => {
-    if(indicadores.id_sala===id_sala){
-    dataDetalle = funAgrupadoVariables(indicadores, arrayVariables)
-     return indicadores["detalles"] = dataDetalle
-    }
-  }, {})
-
-  return  dataIndicador
-}
-
-function  funAgrupadoVariables(arrayIndicadores, arrayVariables) {
-  const  dataDetalle  = arrayVariables
-  .filter(det => {
-    if(arrayIndicadores.id_sala===det.id_sala && arrayIndicadores.id_indicador===det.id_indicador ){
-      console.log("imprimiendo: " +  JSON.stringify(det))
-    return det
-    }
-  })
-
-  return  dataDetalle
-}
-
-
-
-
-function  funAgrupadoVariablesPartes (arraySalas, arrayIndicadores, arrayVariables) {
-  const   dataReduced =   arraySalas
-  .reduce( (obj,val) => {
-   const key = "sala" + val.id_sala
-   obj[key] = {}
-   obj[key].id_sala = val.id_sala;
-   obj[key].desc_sala = val.desc_sala;
-   obj[key].desc_cadena = val.desc_cadena;
-   obj[key].indicadores = funAgrupadoIndicador(arrayIndicadores, val.id_sala, arrayVariables)
-   return obj;
-}, {})
-
-return  dataReduced
-}
-  
-
-  
 
