@@ -109,5 +109,67 @@ function  funAgrupadoVariables(arrayIndicadores, arrayVariables) {
 
 
 
+function ExampleCantidades (data) {
+    
+  const enviosReduced = data
+    .reduce( (obj,val) => {
+
+      const key =  funFecha(val.fechaHoraEnvio) + val.id_sala
+      if(obj[key]) {
+        obj[key].cantidad = obj[key].cantidad + 1;
+      } else {
+        obj[key] = {}
+        obj[key].id_sala = val.id_sala;
+        obj[key].cadena = val.cadena;
+        obj[key].desc_sala = val.desc_sala;
+        obj[key].fechaHora = val.fechaHora;
+        obj[key].fechaHoraEnvio =  funFecha(val.fechaHoraEnvio);
+        obj[key].id_sala = val.id_sala;
+        obj[key].cantidad = 1
+      }
+      return obj;
+    },{})
+
+   return Object.keys(enviosReduced).map(v => enviosReduced[v])
+
+}
+
+
+
+function ExamplefunAgruparFechas () {
+const { envios } = this.props
+const enviosReduced = envios
+  .filter( v => v.status === 'enviado')
+  .reduce( (obj,val) => {
+    const key = funFecha(val.fechaHoraEnvio)
+    if(obj[key]) {
+      obj[key].data.push({
+        id_sala: val.id_sala,
+        desc_sala: val.desc_sala,
+        type: val.type
+      }) 
+    } else {
+      obj[key] = {}
+      obj[key].fechaHoraEnvio = funFecha(val.fechaHoraEnvio);
+      obj[key].data = [
+        {
+          id_sala: val.id_sala,
+          desc_sala: val.desc_sala,
+          type: val.type
+        }
+      ]
+    }
+    
+    return obj;
+    
+  },{})
+
+  return Object.keys(enviosReduced).map(v => enviosReduced[v])
+}
+
+
+
+
+
   
 
