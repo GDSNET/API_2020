@@ -56,7 +56,7 @@ exports.funSalas = function (req, res)  {
           arrayVariables = data[2]
           // console.log("recibiendo todo el arraySalas :  : ", arraySalas)
           // console.log("recibiendo todo el arrayIndicadores :  : ", arrayIndicadores)
-          // console.log("recibiendo todo el arrayVariables :  : ", arrayVariables)
+           console.log("recibiendo todo el arrayVariables :  : ", arrayVariables)
           return funAgrupadoSala(arraySalas, arrayIndicadores, arrayVariables)
         }
           
@@ -98,7 +98,6 @@ function  funAgrupadoVariables(arrayIndicadores, arrayVariables) {
   const  dataDetalle  = arrayVariables
   .filter(det => {
     if(arrayIndicadores.id_sala===det.id_sala && arrayIndicadores.id_indicador===det.id_indicador ){
-      console.log("imprimiendo: " +  JSON.stringify(det))
     return det
     }
   })
@@ -109,18 +108,6 @@ function  funAgrupadoVariables(arrayIndicadores, arrayVariables) {
 
 
 
-function  funAgrupadoVariablesPartes (arrayVariables) {
-  const   dataReduced =   arrayVariables
-  .reduce( (obj,val) => {
-    if(obj.id_sala===det.id_sala && obj.id_indicador===det.id_indicador ){
-   const key = "sala" + val.id_sala
-   obj[key] = {}
-   return obj;
-}, {})
-
-return  dataReduced
-}
-  
 
   
 
