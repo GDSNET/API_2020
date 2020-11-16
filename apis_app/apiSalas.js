@@ -54,6 +54,9 @@ exports.funSalas = function (req, res)  {
           salas = data[0]
           indicadores = data[1]
           detalles = data[2]
+          // console.log("recibiendo todo el salas :  : ", salas)
+          // console.log("recibiendo todo el indicadores :  : ", indicadores)
+           console.log("recibiendo todo el detalles :  : ", detalles)
           return funAgrupando(salas, indicadores, detalles)
         }
           
@@ -62,12 +65,18 @@ exports.funSalas = function (req, res)  {
     }
 
 
+
+
+
+
+
    function  funAgrupando (salas, indicadores, detalles) {
     const   dataReduced =   salas
     .reduce( (obj,val) => {
      const  dataIndicador  =  indicadores
      .filter(indicadores => {
        if(indicadores.id_sala===val.id_sala){
+
        dataDetalle = detalles.filter(det => {
           if(indicadores.id_sala===det.id_sala && indicadores.id_indicador===det.id_indicador ){
           return det
