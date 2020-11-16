@@ -109,15 +109,12 @@ function  funAgrupadoVariables(arrayIndicadores, arrayVariables) {
 
 
 
-function  funAgrupadoVariablesPartes (arraySalas, arrayIndicadores, arrayVariables) {
-  const   dataReduced =   arraySalas
+function  funAgrupadoVariablesPartes (arrayVariables) {
+  const   dataReduced =   arrayVariables
   .reduce( (obj,val) => {
+    if(obj.id_sala===det.id_sala && obj.id_indicador===det.id_indicador ){
    const key = "sala" + val.id_sala
    obj[key] = {}
-   obj[key].id_sala = val.id_sala;
-   obj[key].desc_sala = val.desc_sala;
-   obj[key].desc_cadena = val.desc_cadena;
-   obj[key].indicadores = funAgrupadoIndicador(arrayIndicadores, val.id_sala, arrayVariables)
    return obj;
 }, {})
 

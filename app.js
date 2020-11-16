@@ -34,12 +34,9 @@ app.use(function(req, res, next) {
 });
 
 
-app.post('/post_pre_salas',function (req, res) {
+app.post('/post_app_salas',function (req, res) {
     apiSalas.funSalas(req, res)
 
-})
-app.post('/post_pre_pruebas',function (req, res) {
-    apiPruebas.funPruebas(req, res)
 })
     
 
