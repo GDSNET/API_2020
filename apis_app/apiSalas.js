@@ -86,15 +86,16 @@ function  funAgrupadoIndicador (arrayIndicadores, id_sala, arrayVariables) {
   const  dataIndicador  =  arrayIndicadores
   .filter(indicadores => {
     if(indicadores.id_sala===id_sala){
-    dataDetalle = funAgrupadoVariables(indicadores, arrayVariables)
-     return indicadores["detalles"] = dataDetalle
+    dataFiltrada = funFiltroVariables(indicadores, arrayVariables)
+    dataFiltradAgrupada = funAgrupadoVariables (dataFiltrada)
+     return indicadores["detalles"] = dataFiltradAgrupada
     }
   }, {})
 
   return  dataIndicador
 }
 
-function  funAgrupadoVariables(arrayIndicadores, arrayVariables) {
+function  funFiltroVariables(arrayIndicadores, arrayVariables) {
   const  dataDetalle  = arrayVariables
   .filter(det => {
     if(arrayIndicadores.id_sala===det.id_sala && arrayIndicadores.id_indicador===det.id_indicador ){
@@ -105,7 +106,38 @@ function  funAgrupadoVariables(arrayIndicadores, arrayVariables) {
   return  dataDetalle
 }
 
+function funAgrupadoVariables (data) {
+    
+  const enviosReduced = data
+    .reduce( (obj,val) => {
 
+      
+      if(val.id_sala===obj.id_sala && val.id_indicador===obj.id_indicador ) {
+        obj.cantidad = obj.cantidad + 1;
+      }
+      else {
+        obj = {}
+        obj.id_sala = val.id_sala;
+        obj.id_indicador = val.id_indicador;
+        obj.cantidad = 1
+      }
+      
+      if (val.id_sala===obj.id_sala && val.id_indicador===obj.id_indicador && val.id_variable===1){
+        obj.presencia = val.valor_variable;
+      }
+      if (val.id_sala===obj.id_sala && val.id_indicador===obj.id_indicador && val.id_variable===5){
+        obj.numerico = val.valor_variable;
+      }
+      
+ 
+      return obj;
+    },{})
+
+    
+
+   return enviosReduced
+
+}
 
 
 
@@ -114,17 +146,34 @@ function ExampleCantidades (data) {
   const enviosReduced = data
     .reduce( (obj,val) => {
 
-      const key =  funFecha(val.fechaHoraEnvio) + val.id_sala
+      const key =  val.id_sala
       if(obj[key]) {
         obj[key].cantidad = obj[key].cantidad + 1;
       } else {
         obj[key] = {}
         obj[key].id_sala = val.id_sala;
-        obj[key].cadena = val.cadena;
-        obj[key].desc_sala = val.desc_sala;
-        obj[key].fechaHora = val.fechaHora;
-        obj[key].fechaHoraEnvio =  funFecha(val.fechaHoraEnvio);
+        obj[key].id_indicador = val.id_indicador;
+        obj[key].cantidad = 10
+      }
+      return obj;
+    },{})
+
+   return enviosReduced
+}
+
+
+function ExampleCantidades (data) {
+    
+  const enviosReduced = data
+    .reduce( (obj,val) => {
+
+      const key =  val.id_sala
+      if(obj[key]) {
+        obj[key].cantidad = obj[key].cantidad + 1;
+      } else {
+        obj[key] = {}
         obj[key].id_sala = val.id_sala;
+        obj[key].id_indicador = val.id_indicador;
         obj[key].cantidad = 1
       }
       return obj;
