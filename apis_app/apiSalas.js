@@ -98,7 +98,7 @@ function  funAgrupadoIndicador (arrayIndicadores, id_sala, arrayVariables) {
 function  funFiltroVariables(arrayIndicadores, arrayVariables) {
   const  dataDetalle  = arrayVariables
   .filter(det => {
-    if(arrayIndicadores.id_sala===det.id_sala && arrayIndicadores.id_indicador===det.id_indicador ){
+    if(arrayIndicadores.id_sala===det.id_sala && arrayIndicadores.id_indicador===det.id_indicador){
     return det
     }
   })
@@ -112,7 +112,7 @@ function funAgrupadoVariables (data) {
     .reduce( (obj,val) => {
 
       
-      if(val.id_sala===obj.id_sala && val.id_indicador===obj.id_indicador ) {
+      if(val.id_sala===obj.id_sala && val.id_indicador===obj.id_indicador && val.id_sku === obj.id_sku) {
         obj.cantidad = obj.cantidad + 1;
       }
       else {
@@ -120,16 +120,14 @@ function funAgrupadoVariables (data) {
         obj.id_sala = val.id_sala;
         obj.id_indicador = val.id_indicador;
         obj.cantidad = 1
+        obj.id_sku = val.id_sku
       }
-      
-      if (val.id_sala===obj.id_sala && val.id_indicador===obj.id_indicador && val.id_variable===1){
+      if (val.id_sala===obj.id_sala && val.id_indicador===obj.id_indicador && val.id_sku === obj.id_sku && val.id_variable===1 ){
         obj.presencia = val.valor_variable;
       }
-      if (val.id_sala===obj.id_sala && val.id_indicador===obj.id_indicador && val.id_variable===5){
+      if (val.id_sala===obj.id_sala && val.id_indicador===obj.id_indicador && val.id_sku === obj.id_sku && val.id_variable===5){
         obj.numerico = val.valor_variable;
       }
-      
- 
       return obj;
     },{})
 
