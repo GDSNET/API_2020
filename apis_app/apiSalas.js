@@ -88,7 +88,7 @@ function  funAgrupadoIndicador (arrayIndicadores, id_sala, arrayVariables) {
     if(indicadores.id_sala===id_sala){
     dataFiltrada = funFiltroVariables(indicadores, arrayVariables)
     dataFiltradAgrupada = funAgrupadoVariables (dataFiltrada)
-     return indicadores["detalles"] = dataFiltradAgrupada
+     return indicadores["detalles"] = [dataFiltradAgrupada]
     }
   }, {})
 
@@ -106,11 +106,29 @@ function  funFiltroVariables(arrayIndicadores, arrayVariables) {
   return  dataDetalle
 }
 
+
+
 function funAgrupadoVariables (data) {
     
   const enviosReduced = data
-    .reduce( (obj,val) => {
+  var winner = objKeys.reduce((a, b) => {
+    if (frequency[b] === highestVal) {
+        a.push(b);
+    }
+    return a;
+}, []);
 
+   
+
+}
+
+
+
+function funAgrupadoVariablesBack (data) {
+    
+  const enviosReduced = data
+    .reduce( (obj,val) => {
+      obj = []
       
       if(val.id_sala===obj.id_sala && val.id_indicador===obj.id_indicador && val.id_sku === obj.id_sku) {
         obj.cantidad = obj.cantidad + 1;
@@ -135,6 +153,8 @@ function funAgrupadoVariables (data) {
 
    return enviosReduced
 
+   
+
 }
 
 
@@ -157,6 +177,11 @@ function ExampleCantidades (data) {
     },{})
 
    return enviosReduced
+
+
+
+
+   
 }
 
 
