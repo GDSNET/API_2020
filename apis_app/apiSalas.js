@@ -13,9 +13,9 @@ exports.funSalas = function (req, res)  {
         var conn = pool;
     try{
         conn.connect().then(function () {
-        queryspdv = "select * from [v_app_salas] where token = '" + token + "';"
-        queryspdv2 = "select * from [v_app_salas_indicadores] where token= '" + token + "';"
-        queryspdv3 = "select * from [v_app_salas_indicadores_detalle] where token= '" + token + "';"
+        queryspdv = "select * from [v_app_salas] where token = '" + token + "' and id_sala = 68180;"
+        queryspdv2 = "select * from [v_app_salas_indicadores] where token= '" + token + "' and id_sala = 68180;"
+        queryspdv3 = "select * from [v_app_salas_indicadores_detalle] where token= '" + token + "' and id_sala = 68180;"
         queryAll = queryspdv + queryspdv2 + queryspdv3
        new Promise((resolve) => {
             resolve(funcionQuery(queryAll, conn ))
@@ -56,7 +56,7 @@ exports.funSalas = function (req, res)  {
           arrayVariables = data[2]
           // console.log("recibiendo todo el arraySalas :  : ", arraySalas)
           // console.log("recibiendo todo el arrayIndicadores :  : ", arrayIndicadores)
-           console.log("recibiendo todo el arrayVariables :  : ", arrayVariables)
+           //console.log("recibiendo todo el arrayVariables :  : ", arrayVariables)
           return funAgrupadoSala(arraySalas, arrayIndicadores, arrayVariables)
         }
           
@@ -109,25 +109,29 @@ function  funFiltroVariables(arrayIndicadores, arrayVariables) {
 function funAgrupadoVariables (data) {
     
   const enviosReduced = data
-    .reduce( (obj,val) => {
-
-      
+    .reduce( (obj,val, ind) => {
+      const key = ind
       if(val.id_sala===obj.id_sala && val.id_indicador===obj.id_indicador && val.id_sku === obj.id_sku) {
         obj.cantidad = obj.cantidad + 1;
       }
       else {
-        obj = {}
-        obj.id_sala = val.id_sala;
-        obj.id_indicador = val.id_indicador;
-        obj.cantidad = 1
-        obj.id_sku = val.id_sku
+        obj[key] = {}
+        obj[key].id_sala = val.id_sala;
+        obj[key].id_indicador = val.id_indicador;
+        obj[key].cantidad = 1
+        obj[key].id_sku = val.id_sku
+        console.log(ind)
+        console.log("ENTRE AL ELSE " + obj.id_sku)
+
+        if (val.id_variable===1 ){
+          obj[key].presencia = val.valor_variable;
+        }
+        if (val.id_variable===5){
+          obj[key].numerico = val.valor_variable;
+        }
       }
-      if (val.id_sala===obj.id_sala && val.id_indicador===obj.id_indicador && val.id_sku === obj.id_sku && val.id_variable===1 ){
-        obj.presencia = val.valor_variable;
-      }
-      if (val.id_sala===obj.id_sala && val.id_indicador===obj.id_indicador && val.id_sku === obj.id_sku && val.id_variable===5){
-        obj.numerico = val.valor_variable;
-      }
+
+
       return obj;
     },{})
 
