@@ -13,9 +13,9 @@ exports.funSalas = function (req, res)  {
         var conn = pool;
     try{
         conn.connect().then(function () {
-        queryspdv = "select * from [v_app_salas] where token = '" + token + "' and estado = 1;"
-        queryspdv2 = "select * from [v_app_salas_indicadores] where token= '" + token + "';"
-        queryspdv3 = "select * from [v_app_salas_indicadores_detalle] where token= '" + token + "';"
+        queryspdv = "select * from [v_app_salas] where token = '" + token + "' and id_sala = 68180;"
+        queryspdv2 = "select * from [v_app_salas_indicadores] where token= '" + token + "' and id_sala = 68180;"
+        queryspdv3 = "select * from [v_app_salas_indicadores_detalle] where token= '" + token + "' and id_sala = 68180;"
         queryAll = queryspdv + queryspdv2 + queryspdv3
        new Promise((resolve) => {
             resolve(funcionQuery(queryAll, conn ))
