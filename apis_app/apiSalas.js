@@ -1,4 +1,3 @@
-
 var sql = require('mssql'); 
 
 exports.funSalas = function (req, res)  {

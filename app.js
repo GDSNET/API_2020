@@ -1,6 +1,8 @@
 //import {fun_post_prueba} from './apis_app/post_prueba'
 const apiSalas = require('./apis_app/apiSalas');
-const apiPruebas = require('./apis_pruebas/post_prueba');
+const apiLogin = require('./apis_app/apiLoginApp');
+const apiFotos64 = require('./apis_app/apiFotosBase64');
+const apiHome = require('./apis_app/apiHome');
 const express = require('express');
 const app = express();
 const fs = require('fs');
@@ -36,12 +38,19 @@ app.use(function(req, res, next) {
 
 app.post('/post_app_salas',function (req, res) {
     apiSalas.funSalas(req, res)
-
 })
-    
 
+app.post('/post_insert_foto_64',function (req, res) {
+    apiFotos64.funGuardaFoto(req, res)
+})
 
+app.post('/post_login_app',function (req, res) {
+    apiLogin.funLoginApp(req, res)
+})
 
+app.post('/post_app_home',function (req, res) {
+    apiHome.funHome(req, res)
+})
 
 app.get('/filemanager/list', (req, res) => {
     const path = __dirname + '/Documentos' + req.query.path || '/';
