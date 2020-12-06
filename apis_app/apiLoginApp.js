@@ -2,7 +2,7 @@ var sql = require('mssql');
 
 exports.funLoginApp = function (req, res, next) {
     
-    var id_usuario = req.body.id_usuario;
+    var username = req.body.username;
     var password = req.body.password;
 
     const pool = new sql.ConnectionPool({
@@ -17,7 +17,7 @@ exports.funLoginApp = function (req, res, next) {
 conn.connect().then(function () {
 var req = new sql.Request(conn);
 
-query = "SELECT token FROM [dbo].[app_cfg_usuario] WHERE id_usuario = "+id_usuario+" AND password= '"+password+"'";
+query = "SELECT token FROM [dbo].[app_cfg_usuario] WHERE username = '"+username+"' AND password= '"+password+"'";
 console.log(query);
 conn.query(query).then( function (recordset) {
 console.log(recordset)
@@ -26,14 +26,16 @@ console.log(recordset)
 }) 
     .catch(function (err) {
         console.log("ERROR 2");
-        res.json({"usuario":"ERROR"}); 
+        res.json({"usuario":"ERROR",
+                  "desc_error": err}); 
         conn.close();
     });
 
 })
 .catch(function (err) {
     console.log("ERROR 2");
-    res.json({"usuario":"ERROR"}); 
+    res.json({"usuario":"ERROR",
+              "desc_error": err}); 
     conn.close();
 });
 }
