@@ -17,7 +17,7 @@ exports.funHome = function (req, res)  {
         conn.connect().then(function () {
         querysobj = "select * from [dbo].[app_cfg_objecion] where id_cliente = " + id_cliente + ""
         queryres = "select * from [v_app_usuarios_indicadores_resumen] where token= '" + token + "'"
-        queryrank = "select top 10 * from [dbo].[v_app_salas_indicadores] where id_indicador = 0 and valor IS NOT NULL and token= '"+token+"' order by valor asc "
+        queryrank = "select * from v_app_ranking_salas where token= '"+token+"' order by valor asc "
         queryAll = querysobj + queryres + queryrank
        // console.log(queryAll)
        new Promise((resolve) => {
@@ -59,13 +59,24 @@ exports.funHome = function (req, res)  {
           arrayRanking = data[2]
           // console.log("recibiendo todo el arraySalas :  : ", arraySalas)
           //console.log("recibiendo todo el arrayIndicadores :  : ", arrayIndicadores)
-           console.log("recibiendo todo el arrayRanking :  : ", arrayRanking)
+          // console.log("recibiendo todo el arrayRanking :  : ", arrayRanking)
           return funAgrupaObjeciones(arrayObjeciones, arrayResumen, arrayRanking)
         }
     }
 
 
     function  funAgrupaObjeciones (arrayObjeciones, arrayResumen, arrayRanking) {
+
+        usuario = {}
+
+        arrayResumen.map( function (value, i)  {
+            usuario = ({
+                "id_usuario": value.id_usuario,
+                "desc_usuario": value.nombre,
+                "estado": 0
+            })
+
+        })
 
 var respuesta = []
 
@@ -101,15 +112,19 @@ var respuesta = []
         arrayRanking.map( function (value, i)  {
             ranking.rankings.push({
                 "id_sala": value.id_sala,
-                "desc_sala": value.desc_sala,
+                "cadena": value.desc_cadena,
+                "desc_sala": value.desc_pto_observacion,
                 "indicadores": funIndicadoresRan(value.id_sala, value.id_indicador ,arrayRanking)
             });
 
         });
 
-     respuesta.push(objecion, indicador, ranking);
+    respuesta = Object.assign(objecion, indicador, ranking)
+    // respuesta.push(objecion, indicador, ranking);
 
-        return respuesta;
+     let obj_unidos = Object.assign(usuario, respuesta )
+
+        return obj_unidos;
     };
 
 
