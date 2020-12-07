@@ -68,7 +68,7 @@ exports.funSalas = function (req, res)  {
 
    function  funAgrupadoSala (arraySalas, arrayIndicadores, arrayVariables) {
 
-    dataRes = []
+    dataRes = {}
 
     var sala = {
       salas:[]
@@ -100,9 +100,14 @@ exports.funSalas = function (req, res)  {
      return (obj);
   }, {})
 
-dataRes.push(sala, dataReduced)
+dataRes.salas = (sala)
+dataRes.det = (dataReduced)
 
-  return  dataRes
+let obj_unidos = Object.assign(dataRes.salas, dataRes.det )
+
+//return Object.keys(obj_unidos).map(v => obj_unidos[v])
+
+  return  obj_unidos
 }
 
 
