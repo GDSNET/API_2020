@@ -3,6 +3,7 @@ const apiSalas = require('./apis_app/apiSalas');
 const apiLogin = require('./apis_app/apiLoginApp');
 const apiFotos64 = require('./apis_app/apiFotosBase64');
 const apiHome = require('./apis_app/apiHome');
+const apiCadenas = require ('./apis_app/apiCadenas');
 const express = require('express');
 const app = express();
 const fs = require('fs');
@@ -50,6 +51,10 @@ app.post('/post_login_app',function (req, res) {
 
 app.post('/post_app_home',function (req, res) {
     apiHome.funHome(req, res)
+})
+
+app.post('/post_app_cadenas',function (req, res) {
+    apiCadenas.funCadenasApp(req, res)
 })
 
 app.get('/filemanager/list', (req, res) => {
