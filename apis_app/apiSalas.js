@@ -12,13 +12,15 @@ exports.funSalas = function (req, res)  {
         var conn = pool;
     try{
         conn.connect().then(function () {
-        queryspdv = "select * from [v_app_salas] where token = '" + token + "'"
+        queryspdv = "select TOP 3 * from [v_app_salas] where token = '" + token + "'"
         queryspdv2 = "select * from [v_app_salas_indicadores] where token= '" + token + "'"
         queryspdv3 = "select * from [v_app_salas_indicadores_detalle] where token= '" + token + "'"
         queryAll = queryspdv + queryspdv2 + queryspdv3
        new Promise((resolve) => {
             resolve(funcionQuery(queryAll, conn ))
         }).then(respuesta=>{
+
+         // respuesta.push(funIndexSalas());
             res.json(respuesta)
           })
           .catch(respuesta=>{
@@ -53,7 +55,7 @@ exports.funSalas = function (req, res)  {
           arraySalas = data[0]
           arrayIndicadores = data[1]
           arrayVariables = data[2]
-          // console.log("recibiendo todo el arraySalas :  : ", arraySalas)
+           //console.log("recibiendo todo el arraySalas :  : ", arraySalas)
           // console.log("recibiendo todo el arrayIndicadores :  : ", arrayIndicadores)
           // console.log("recibiendo todo el arrayVariables :  : ", arrayVariables)
           return funAgrupadoSala(arraySalas, arrayIndicadores, arrayVariables)
@@ -65,20 +67,43 @@ exports.funSalas = function (req, res)  {
 
 
    function  funAgrupadoSala (arraySalas, arrayIndicadores, arrayVariables) {
+
+    dataRes = []
+
+    var sala = {
+      salas:[]
+  };
+  
+
+  arraySalas.map( function (value, i)  {
+    sala.salas.push({
+                "id_sala": value.id_sala,
+                "fechaHora" : value.fecha_visita,
+                "cadena": value.desc_cadena,
+                "desc_sala": value.desc_sala,
+                "direccion": value.desc_direccion,
+                "numero": 99,
+                "estado": value.estado
+            })
+
+        })
+
     const   dataReduced =   arraySalas
     .reduce( (obj,val) => {
+
      const key = "sala" + val.id_sala
      obj[key] = {}
      obj[key].id_sala = val.id_sala;
      obj[key].desc_sala = val.desc_sala;
      obj[key].desc_cadena = val.desc_cadena;
      obj[key].indicadores = funAgrupadoIndicador(arrayIndicadores, val.id_sala, arrayVariables)
-     return obj;
+     return (obj);
   }, {})
 
-  return  dataReduced
+dataRes.push(sala, dataReduced)
+
+  return  dataRes
 }
-    
 
 
 function  funAgrupadoIndicador (arrayIndicadores, id_sala, arrayVariables) {
