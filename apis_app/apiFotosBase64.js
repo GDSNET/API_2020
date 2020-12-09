@@ -7,7 +7,7 @@ exports.funGuardaFoto = function (req, res, next) {
     var id_sala = req.body.id_sala;
     var id_indicador = req.body.id_indicador;
     var id_sku = req.body.id_sku;
-    var id_objecion = req.body.id_objecion;
+    var desc_objecion = req.body.desc_objecion;
     var foto = req.body.foto;
     var fecha_envio = req.body.fecha_envio;
 
@@ -23,7 +23,7 @@ exports.funGuardaFoto = function (req, res, next) {
 conn.connect().then(function () {
 var req = new sql.Request(conn);
 
-queryinsertfoto = "insert into [dbo].[app_recibe_fotos] values("+id_usuario+",'"+fecha_objecion+"',"+id_sala+","+id_indicador+","+id_sku+","+id_objecion+",'"+foto+"','"+fecha_envio+"')";
+queryinsertfoto = "insert into [dbo].[app_recibe_fotos] values("+id_usuario+",'"+fecha_objecion+"',"+id_sala+","+id_indicador+","+id_sku+",'"+desc_objecion+"','"+foto+"','"+fecha_envio+"')";
 //console.log(queryinsertfoto);
 conn.query(queryinsertfoto).then( function (recordset) {
     
@@ -38,14 +38,14 @@ conn.close();
 
     console.log("ERROR 2");
     res.json({"usuario":"ERROR",
-              "desc_error": err}); 
+              "desc_error": err.message}); 
     conn.close();
 });
 })
 .catch(function (err) {
     console.log("ERROR 2");
     res.json({"usuario":"ERROR",
-              "desc_error": err}); 
+              "desc_error": err.message}); 
     conn.close();
 });
 }
