@@ -17,7 +17,7 @@ exports.funLoginApp = function (req, res, next) {
 conn.connect().then(function () {
 var req = new sql.Request(conn);
 
-query = "SELECT token, nombre, id_cliente FROM [dbo].[app_cfg_usuario] WHERE username = '"+username+"' AND password= '"+password+"'";
+query = "SELECT token, nombre as usuario, id_cliente FROM [dbo].[app_cfg_usuario] WHERE username = '"+username+"' AND password= '"+password+"'";
 //console.log(query);
 conn.query(query).then( function (recordset) {
 //console.log(recordset)
@@ -25,7 +25,7 @@ conn.query(query).then( function (recordset) {
 console.log(recordset.recordset.length)
 
 if(recordset.recordset.length === 0){
-    res.json({"usuario"  : "Usuario o Contraseña invalidos."})
+    res.json({"usuario"  : "NOUSER"})
 }
 else{res.json(recordset.recordset[0])}
             

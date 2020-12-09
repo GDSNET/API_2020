@@ -2,9 +2,14 @@ var sql = require('mssql');
 
 exports.funGuardaFoto = function (req, res, next) {
     
-    var id_foto = req.body.id_foto;
-    var foto_base_64 = req.body.foto_base_64;
-
+    var id_usuario = req.body.id_usuario;
+    var fecha_objecion = req.body.fecha_objecion;
+    var id_sala = req.body.id_sala;
+    var id_indicador = req.body.id_indicador;
+    var id_sku = req.body.id_sku;
+    var id_objecion = req.body.id_objecion;
+    var foto = req.body.foto;
+    var fecha_envio = req.body.fecha_envio;
 
     const pool = new sql.ConnectionPool({
         user: 'sa',
@@ -18,15 +23,29 @@ exports.funGuardaFoto = function (req, res, next) {
 conn.connect().then(function () {
 var req = new sql.Request(conn);
 
-queryinsertfoto = "insert into [dbo].[image_64] values("+id_foto+",'"+foto_base_64+"')";
+queryinsertfoto = "insert into [dbo].[app_recibe_fotos] values("+id_usuario+",'"+fecha_objecion+"',"+id_sala+","+id_indicador+","+id_sku+","+id_objecion+",'"+foto+"','"+fecha_envio+"')";
 //console.log(queryinsertfoto);
 conn.query(queryinsertfoto).then( function (recordset) {
     
-console.log(recordset);
+//console.log(recordset);
+
 res.json({"mensaje" : "OK"});
 res.end();
 conn.close();
 
 })
+.catch(function (err) {
+
+    console.log("ERROR 2");
+    res.json({"usuario":"ERROR",
+              "desc_error": err}); 
+    conn.close();
+});
 })
+.catch(function (err) {
+    console.log("ERROR 2");
+    res.json({"usuario":"ERROR",
+              "desc_error": err}); 
+    conn.close();
+});
 }
